@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#11131a">
+    <meta name="description" content="Caça Blocos — uma disputa arcade de reflexos, estratégia e coleta na arena.">
+    <title>Caça Blocos — Arena</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Michroma&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="lobby.css">
+    <script src="lobby.js" defer></script>
+    <script src="game.js" defer></script>
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Caça Blocos, início">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span>CAÇA<span class="brand-light">BLOCOS</span></span>
+        </a>
+      </header>
+
+      <main>
+        <section class="screen lobby" id="setup-screen" aria-labelledby="setup-title">
+        <canvas id="lobby-bg" aria-hidden="true"></canvas>
+      
+        <div class="lobby-grid">
+          <div class="lb-hero">
+            <h1 id="setup-title" aria-label="Caça Blocos">
+              <span class="lb-word" aria-hidden="true">
+                <i style="--c:#20b8ff">C</i><i style="--c:#ffe04d">A</i><i style="--c:#38f58a">Ç</i><i style="--c:#ff316f">A</i>
+              </span>
+              <span class="lb-word" aria-hidden="true">
+                <i style="--c:#c869ff">B</i><i style="--c:#49f4ff">L</i><i style="--c:#ffe04d">O</i><i style="--c:#20b8ff">C</i><i style="--c:#38f58a">O</i><i style="--c:#ff316f">S</i>
+              </span>
+            </h1>
+      
+            <p class="lb-tagline"><span>Pequenos blocos.</span> <span>Grandes disputas.</span></p>
+      
+            <ul class="lb-legend" aria-label="Bolas da arena">
+              <li class="o-coleta" style="--c:#38f58a"><span class="lb-orb" aria-hidden="true"></span><span><b>Coleta</b><small>+1 ponto e os muros mudam de lugar</small></span></li>
+              <li class="o-hit" style="--c:#ff316f"><span class="lb-orb" aria-hidden="true"></span><span><b>Ataque</b><small>+1 para você, −1 para o rival</small></span></li>
+              <li class="o-turbo" style="--c:#c869ff"><span class="lb-orb" aria-hidden="true"></span><span><b>Turbo</b><small>Velocidade 2× por 10 segundos</small></span></li>
+              <li class="o-tp" style="--c:#49f4ff"><span class="lb-orb" aria-hidden="true"></span><span><b>Teleporte</b><small>3 saltos direto para onde você clicar</small></span></li>
+            </ul>
+          </div>
+      
+          <div class="lb-panel">
+            <div class="lb-head">
+              <strong>Nova partida</strong>
+              <button class="lb-how" type="button" id="howto-open" aria-haspopup="dialog" aria-controls="howto"><i aria-hidden="true">?</i>Como jogar?</button>
+            </div>
+      
+            <div class="lb-slot lb-modes" role="group" aria-labelledby="lb-modes-title">
+              <span class="lb-lab" id="lb-modes-title">Modo de jogo</span>
+              <div class="lb-seg" id="mode-control">
+                <button class="segment is-selected" type="button" data-mode="1">
+                  <span class="px" aria-hidden="true"><i class="me"></i><i class="bot"></i></span>
+                  <strong>1 jogador</strong><small>Você contra o robô</small>
+                </button>
+                <button class="segment" type="button" data-mode="2">
+                  <span class="px" aria-hidden="true"><i class="p1"></i><i class="me"></i></span>
+                  <strong>2 jogadores</strong><small>Duelo no mesmo teclado</small>
+                </button>
+              </div>
+            </div>
+      
+            <div class="lb-slot lb-diff">
+              <label class="lb-lab" for="difficulty">Dificuldade do robô</label>
+              <div class="lb-ctl">
+                <span class="lb-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+                <div class="lb-select">
+                  <select id="difficulty">
+                    <option value="Fácil">Fácil</option>
+                    <option value="Normal" selected>Normal</option>
+                    <option value="Difícil">Difícil</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+      
+            <div class="lb-slot lb-goal">
+              <div class="lb-lab">Pontos para vencer<small>Chegue à meta primeiro</small></div>
+              <div class="lb-step">
+                <button type="button" id="goal-minus" aria-label="Diminuir pontos para vencer">−</button>
+                <output id="goal-value" aria-live="polite">50</output>
+                <button type="button" id="goal-plus" aria-label="Aumentar pontos para vencer">+</button>
+              </div>
+            </div>
+      
+            <div class="lb-slot lb-music">
+              <div class="lb-track">
+                <span class="lb-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                <div class="lb-lab">Trilha sonora<small id="track-name">Música 1 · padrão</small></div>
+              </div>
+              <div class="lb-chips">
+                <label class="lb-chip" for="music-upload">Enviar
+                  <input id="music-upload" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac" hidden>
+                </label>
+                <button class="lb-chip" type="button" id="change-track" aria-label="Trocar trilha sonora">Trocar</button>
+              </div>
+            </div>
+      
+            <div class="lb-foot">
+              <button class="lb-play" type="button" id="play-button"><span>JOGAR</span><span class="lb-tri" aria-hidden="true"></span></button>
+              <div class="lb-keys" aria-label="Controles">
+                <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> ou <kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd> movem</span>
+                <span><kbd>T</kbd> teleporta</span>
+                <span><kbd>P</kbd> pausa</span>
+              </div>
+              <p class="keyboard-hint">Pressione jogar para iniciar a partida.</p>
+            </div>
+          </div>
+        </div>
+        <div class="lb-modal" id="howto" role="dialog" aria-modal="true" aria-labelledby="howto-title" hidden>
+          <div class="lb-sheet">
+            <div class="lb-sh-head">
+              <div><h2 id="howto-title">Como jogar</h2><p>Tudo o que você precisa para dominar a arena.</p></div>
+              <button class="lb-x" type="button" id="howto-close" aria-label="Fechar manual">×</button>
+            </div>
+            <div class="lb-sh-body" id="howto-body" tabindex="0">
+              <section class="lb-sec" style="--c:#20b8ff">
+                <h3>Objetivo</h3>
+                <p>Cada bola coletada vale <b>+1 ponto</b>. Quem chegar primeiro à meta vence: 5, 10, 20 ou 50 pontos, como você escolher no menu.</p>
+                <p style="margin-top:10px">Contra o robô, ele é o bloco <b>azul</b> e você é o <b>amarelo</b>. Em 2 jogadores, o duelo é azul contra amarelo. No modo Difícil, o robô corre primeiro atrás das bolas especiais.</p>
+              </section>
+              <section class="lb-sec" style="--c:#ffe04d">
+                <h3>Controles</h3>
+                <ul class="lb-ctrls">
+                  <li><span>1 jogador</span><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> ou setas</span></li>
+                  <li><span>2 jogadores</span><span>Azul <kbd>WASD</kbd> · Amarelo setas</span></li>
+                  <li><span>Teleporte</span><span><kbd>T</kbd> e clique no destino</span></li>
+                  <li><span>Pausa · Menu · Tela cheia</span><span><kbd>P</kbd><kbd>Esc</kbd><kbd>F11</kbd></span></li>
+                  <li><span>No celular</span><span>Joysticks e botão T</span></li>
+                </ul>
+              </section>
+              <section class="lb-sec wide" style="--c:#38f58a">
+                <h3>As bolas da arena</h3>
+                <div class="lb-balls">
+                  <div class="lb-ball o-coleta" style="--c:#38f58a"><span class="lb-orb" aria-hidden="true"></span><b>Verde · Coleta</b><p>Sempre presente. Vale +1 ponto, e ao pegá-la os muros mudam de lugar.</p></div>
+                  <div class="lb-ball o-hit" style="--c:#ff316f"><span class="lb-orb" aria-hidden="true"></span><b>Vermelha · Ataque</b><p>+1 para você e −1 para o rival, que volta ao ponto de partida. Some em 8 s.</p></div>
+                  <div class="lb-ball o-turbo" style="--c:#c869ff"><span class="lb-orb" aria-hidden="true"></span><b>Roxa · Turbo</b><p>+1 ponto e velocidade dobrada por 10 s. Some em 8 s se ninguém pegar.</p></div>
+                  <div class="lb-ball o-tp" style="--c:#49f4ff"><span class="lb-orb" aria-hidden="true"></span><b>Azul · Teleporte</b><p>Dá 3 teleportes. Só jogadores humanos pegam. Some em 10 s.</p></div>
+                </div>
+              </section>
+              <section class="lb-sec" style="--c:#ff316f">
+                <h3>Perigos</h3>
+                <ul>
+                  <li>Encostar em um <b>muro</b> devolve você ao ponto de partida.</li>
+                  <li>Se os dois blocos <b>colidirem</b>, ambos voltam ao início.</li>
+                  <li>Teleporte para um destino bloqueado falha, mas não gasta carga.</li>
+                  <li>Os pontos nunca ficam abaixo de zero.</li>
+                </ul>
+              </section>
+              <section class="lb-sec" style="--c:#c869ff">
+                <h3>Dicas</h3>
+                <ul>
+                  <li>O teleporte salta por cima dos muros: vá direto à bola.</li>
+                  <li>Pegar a bola verde reorganiza os muros e pode fechar o caminho do rival.</li>
+                  <li>Perto da meta, cuidado com o ataque vermelho.</li>
+                  <li>Use <b>Enviar</b> no menu para jogar com a sua própria música.</li>
+                </ul>
+              </section>
+            </div>
+          </div>
+        </div>
+      </section>
+
+        <section class="screen game-screen is-hidden" id="game-screen" aria-label="Arena Caça Blocos">
+          <div class="game-toolbar">
+            <div class="game-heading">
+              <button class="back-button" type="button" id="back-button" aria-label="Voltar às configurações">&lt;</button>
+              <div><span class="eyebrow">PARTIDA AO VIVO</span><h2 id="game-mode-title">Contra o Robô</h2></div>
+            </div>
+            <div class="game-actions">
+              <span class="teleport-stock" aria-label="Usos de teleporte disponíveis" title="Colete a bola azul para ganhar até três teletransportes">
+                <span class="teleport-key" aria-hidden="true">T</span><span class="teleport-label">TELEPORTE</span><strong id="teleport-count">0</strong>
+              </span>
+              <button class="icon-button" type="button" id="pause-button" aria-label="Pausar jogo" title="Pausar (P)">Ⅱ</button>
+              <button class="icon-button" type="button" id="fullscreen-button" aria-label="Tela cheia" title="Tela cheia">⛶</button>
+            </div>
+          </div>
+
+          <div class="arena-frame" id="arena-frame">
+            <canvas id="arena" width="2560" height="1440" aria-label="Arena do jogo"></canvas>
+            <div class="arena-hud">
+              <div class="scoreboard" aria-label="Placar">
+                <div class="score-player blue-player">
+                  <span class="score-name" id="blue-name">AZUL</span><strong id="blue-score">00</strong>
+                  <span class="score-meter" aria-hidden="true"><i id="blue-progress"></i></span>
+                </div>
+                <div class="score-divider"><span>VS</span><small>META <b id="score-goal">50</b></small></div>
+                <div class="score-player yellow-player">
+                  <strong id="yellow-score">00</strong><span class="score-name" id="yellow-name">VOCÊ</span>
+                  <span class="score-meter" aria-hidden="true"><i id="yellow-progress"></i></span>
+                </div>
+              </div>
+              <div class="game-footer">
+                <div class="legend">
+                  <span><i class="legend-dot green"></i>+1 / MUDA MUROS</span>
+                  <span><i class="legend-dot red"></i>ATAQUE</span>
+                  <span><i class="legend-dot purple"></i>TURBO 2×</span>
+                  <span><i class="legend-dot cyan"></i>BOLA AZUL: +3 TELEPORTES</span>
+                </div>
+                <div class="controls-help" id="controls-help">SETAS OU WASD <span>·</span> T + CLIQUE TELEPORTA <span>·</span> P PAUSA</div>
+              </div>
+            </div>
+            <div class="arena-overlay" id="arena-overlay" aria-live="polite"></div>
+          </div>
+          <div class="touch-controls" id="touch-controls" aria-label="Controles por toque">
+            <div class="joystick" data-player="0" aria-label="Joystick do jogador azul">
+              <span class="joystick-label">AZUL</span><span class="joystick-knob"></span>
+            </div>
+            <button class="touch-ability" type="button" id="touch-teleport" aria-label="Ativar teleporte" title="Ativar teleporte">T<span class="touch-teleport-count" id="touch-teleport-count">0</span></button>
+            <div class="joystick" data-player="1" aria-label="Joystick do jogador amarelo">
+              <span class="joystick-label">AMARELO</span><span class="joystick-knob"></span>
+            </div>
+          </div>
+        </section>
+      </main>
+      <section class="orientation-gate" id="orientation-gate" hidden aria-labelledby="orientation-title">
+        <div class="orientation-card">
+          <div class="orientation-art" aria-hidden="true">
+            <span class="phone-shape"><i></i></span>
+            <span class="rotate-arrow">↻</span>
+          </div>
+          <div class="eyebrow">MODO ARENA</div>
+          <h2 id="orientation-title">Gire seu celular</h2>
+          <p>Caça Blocos foi feito para jogar na horizontal. Gire a tela para ter o melhor campo de visão.</p>
+          <button type="button" class="orientation-button" id="orientation-button">GIRAR E ENTRAR EM TELA CHEIA <span>↗</span></button>
+          <small id="orientation-hint">A arena se ajusta quando você girar o aparelho.</small>
+        </div>
+      </section>
+      <footer class="page-footer">
+        <span>CAÇA BLOCOS <span class="footer-muted">/</span> ARCADE DE ARENA</span>
+        <span>JOGUE COM TECLADO <span class="footer-muted">·</span> F11 TELA CHEIA</span>
+      </footer>
+    </div>
+  </body>
+</html>
